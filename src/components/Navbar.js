@@ -1,9 +1,25 @@
+import {Link} from 'react-router-dom';
+import { useState , useEffect } from 'react';
 function Navbar() {
+
+  const [items, setItems] = useState(null);
+  const handleLink=()=>{
+    const items = JSON.parse(localStorage.getItem('dataKey'));
+    // items.token=null
+    localStorage.setItem('TokenVal', null);
+    localStorage.setItem('dataKey', JSON.stringify(items));
+    
+  }
+   useEffect (() => {  
+  const items = JSON.parse(localStorage.getItem('dataKey'));
+ 
+  if (items) {
+   setItems(items);
+   console.log("I'm User data of navbar", items.user.firstName )
+  }
+}, []);
   return (
     <nav className="navbar navbar-expand navbar-light navbar-bg">
-      <a className="sidebar-toggle js-sidebar-toggle">
-        <i className="hamburger align-self-center"></i>
-      </a>
 
       <div className="navbar-collapse collapse">
         <ul className="navbar-nav navbar-align">
@@ -22,34 +38,24 @@ function Navbar() {
               data-bs-toggle="dropdown"
             >
               <img
-                src="vendor/img/avatars/avatar.jpg"
+                src="vendor/img/avatars/mair.jpeg"
                 className="avatar img-fluid rounded me-1"
                 alt="Charles Hall"
               />{" "}
-              <span className="text-dark">Maira Nawaz</span>
+              {items === null ? ( <span className="text-dark">user</span>):(<span className="text-dark">{items.user.firstName}</span>)}
+           
             </a>
             <div className="dropdown-menu dropdown-menu-end">
-              <a className="dropdown-item" href="pages-profile.html">
+              <Link to="/profile" className='dropdown-item'>
+
                 <i className="align-middle me-1" data-feather="user"></i>{" "}
                 Profile
-              </a>
-              <a className="dropdown-item" href="#">
-                <i className="align-middle me-1" data-feather="pie-chart"></i>{" "}
-                Analytics
-              </a>
+              </Link>
+              
               <div className="dropdown-divider"></div>
-              <a className="dropdown-item" href="index.html">
-                <i className="align-middle me-1" data-feather="settings"></i>{" "}
-                Settings & Privacy
-              </a>
-              <a className="dropdown-item" href="#">
-                <i className="align-middle me-1" data-feather="help-circle"></i>{" "}
-                Help Center
-              </a>
-              <div className="dropdown-divider"></div>
-              <a className="dropdown-item" href="#">
-                Log out
-              </a>
+              <Link onClick={()=>{handleLink()}}to="/" className='dropdown-item'>
+              Log out 
+              </Link>
             </div>
           </li>
         </ul>

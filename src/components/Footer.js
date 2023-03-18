@@ -7,18 +7,18 @@ function Footer() {
             <p className="mb-0">
               <a
                 className="text-muted"
-                href="https://adminkit.io/"
+                href="className"
                 target="_blank"
               >
-                <strong>AdminKit</strong>
+                <strong>Programmers' Battle</strong>
               </a>{" "}
               -{" "}
               <a
                 className="text-muted"
-                href="https://adminkit.io/"
+                href="#"
                 target="_blank"
               >
-                <strong>Bootstrap Admin Template</strong>
+                <strong></strong>
               </a>{" "}
               &copy;
             </p>
@@ -28,7 +28,7 @@ function Footer() {
               <li className="list-inline-item">
                 <a
                   className="text-muted"
-                  href="https://adminkit.io/"
+                  href="#"
                   target="_blank"
                 >
                   Support
@@ -37,7 +37,7 @@ function Footer() {
               <li className="list-inline-item">
                 <a
                   className="text-muted"
-                  href="https://adminkit.io/"
+                  href="#"
                   target="_blank"
                 >
                   Help Center
@@ -46,7 +46,7 @@ function Footer() {
               <li className="list-inline-item">
                 <a
                   className="text-muted"
-                  href="https://adminkit.io/"
+                  href="#"
                   target="_blank"
                 >
                   Privacy
@@ -55,7 +55,7 @@ function Footer() {
               <li className="list-inline-item">
                 <a
                   className="text-muted"
-                  href="https://adminkit.io/"
+                  href="#"
                   target="_blank"
                 >
                   Terms

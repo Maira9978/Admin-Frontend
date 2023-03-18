@@ -1,3 +1,12 @@
+import {Link} from "react-router-dom"
+import { MdDashboard } from "react-icons/md";
+import { AiFillProfile } from "react-icons/ai";
+import { MdManageAccounts } from "react-icons/md";
+import { MdOutlineManageAccounts} from "react-icons/md";
+import { BsFillCloudUploadFill} from "react-icons/bs";
+import { BiAddToQueue} from "react-icons/bi";
+import { CiViewTable} from "react-icons/ci";
+
 function Sidebar() {
   return (
     <nav id="sidebar" className="sidebar js-sidebar">
@@ -7,44 +16,107 @@ function Sidebar() {
         </a>
 
         <ul className="sidebar-nav">
-          <li className="sidebar-header">Pages</li>
+          <li className="sidebar-header"></li>
 
-          <li className="sidebar-item active">
-            <a className="sidebar-link" href="index.html">
+
+
+          <li className="sidebar-item ">
+            <Link to="/main" className="sidebar-link">
+            
               <i className="align-middle" data-feather="sliders"></i>{" "}
-              <span className="align-middle">Dashboard</span>
-            </a>
+              <MdDashboard/>
+              <span className="align-middle">Home</span>
+            
+            </Link>
           </li>
 
           <li className="sidebar-item">
-            <a className="sidebar-link" href="pages-profile.html">
+            <Link to="/profile" className='sidebar-link'>
+            
               <i className="align-middle" data-feather="user"></i>{" "}
+              <AiFillProfile/>
               <span className="align-middle">Profile</span>
-            </a>
+            
+            </Link>
           </li>
 
           <li className="sidebar-item">
+            <Link to="/managetopic" className='sidebar-link'>
+            
+              <i className="align-middle" data-feather="user"></i>{" "}
+              <MdManageAccounts/>
+              <span className="align-middle">Manage Topic</span>
+            
+            </Link>
+          </li>
+
+
+
+          <li className="sidebar-item">
+            <Link to="/managetype" className='sidebar-link'>
+            
+              <i className="align-middle" data-feather="user"></i>{" "}
+              <MdOutlineManageAccounts/>
+              <span className="align-middle">Manage Question Type</span>
+            
+            </Link>
+          </li>
+          {/* <li className="sidebar-item">
             <a className="sidebar-link" href="pages-sign-in.html">
               <i className="align-middle" data-feather="log-in"></i>{" "}
               <span className="align-middle">Sign In</span>
             </a>
-          </li>
+          </li> */}
 
-          <li className="sidebar-item">
+          {/* <li className="sidebar-item">
             <a className="sidebar-link" href="pages-sign-up.html">
               <i className="align-middle" data-feather="user-plus"></i>{" "}
               <span className="align-middle">Sign Up</span>
             </a>
+          </li> */}
+
+          <li className="sidebar-item">
+          <Link to="/blank" className='sidebar-link'>
+              <i className="align-middle" data-feather="book"></i>{" "}
+              <BsFillCloudUploadFill/>
+              <span className="align-middle">Upload Questions</span>
+          </Link>
+          </li>
+          <li className="sidebar-item">
+          <Link to="/addquestion" className='sidebar-link'>
+              <i className="align-middle" data-feather="book"></i>{" "}
+              <BiAddToQueue/>
+              <span className="align-middle">Add Questions</span>
+          </Link>
           </li>
 
           <li className="sidebar-item">
-            <a className="sidebar-link" href="pages-blank.html">
+          <Link to="/viewquestionbank" className='sidebar-link'>
               <i className="align-middle" data-feather="book"></i>{" "}
-              <span className="align-middle">Blank</span>
-            </a>
+              <CiViewTable/>
+              <span className="align-middle">View Question Bank</span>
+          </Link>
           </li>
 
-          <li className="sidebar-header">Tools & Components</li>
+          <li className="sidebar-item">
+          <Link to="/edit" className='sidebar-link'>
+              <i className="align-middle" data-feather="book"></i>{" "}
+              <CiViewTable/>
+              <span className="align-middle">Edit Questions</span>
+          </Link>
+          </li>
+
+
+
+
+
+
+
+
+
+
+
+          {/* <li className="sidebar-header">Tools & Components</li>
 
           <li className="sidebar-item">
             <a className="sidebar-link" href="ui-buttons.html">
@@ -95,7 +167,7 @@ function Sidebar() {
               <i className="align-middle" data-feather="map"></i>{" "}
               <span className="align-middle">Maps</span>
             </a>
-          </li>
+          </li> */}
         </ul>
       </div>
     </nav>
