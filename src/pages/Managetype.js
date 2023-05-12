@@ -25,22 +25,24 @@ function ManageType() {
   };
   const getQuestions = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:2000/api/viewquestion"
-      );
+      const response = await axios.get("http://localhost:2000/api/viewquestion");
       setQuestions(response.data.question);
     } catch (error) {
+      // handle error
     }
   };
-  const getQuestionsCount = (categoryId) => {
+  
+  useEffect(() => {
     getQuestions();
-    questions.filter((question) => question.category);
-
+  }, []);
+  
+  const getQuestionsCount = (categoryId) => {
     const filteredQuestions = questions.filter(
-      (question) => question.categories === categoryId
+      (question) => question.category === categoryId
     );
     return filteredQuestions.length;
   };
+
   const handleSearch = useCallback(async () => {
     try {
       const response = await axios.get(
@@ -62,9 +64,13 @@ function ManageType() {
           cName: newType,
         }
       );
+      const {id, cName, createdAt} = response.data.category;
       setCategoryList((prevCategoryList) => [
         ...prevCategoryList,
-        response.data,
+        {id:id,
+        name:cName,
+        createdAt:moment(createdAt).format("MM/DD/YYYY hh:mm:ss A")}
+        
       ]);
       setNewType("");
     } catch (error) {
@@ -145,7 +151,8 @@ function ManageType() {
                   </div>
                   <div className="card-body">
                     <form onSubmit={handleSubmit}>
-                      <div className="input-group mb-3">
+                      <div className="input-group mb-3"
+                       style={{ width: "45%" }}>
                         <input
                           type="text"
                           className="form-control"

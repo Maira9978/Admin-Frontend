@@ -1,7 +1,6 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import React, { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
 import axios from "axios";
 
 function ViewQuestionBank() {
@@ -16,6 +15,12 @@ function ViewQuestionBank() {
     difficulty: "",
     keyword: "",
   });
+  const [editingQuestionId, setEditingQuestionId] = useState(null);
+  const [editingQuestionContent, setEditingQuestionContent] = useState("");
+  const [editingQuestionTopic, setEditingQuestionTopic] = useState("");
+  const [editingQuestionCategory, setEditingQuestionCategory] = useState("");
+  const [editingQuestionDifficulty, setEditingQuestionDifficulty] =
+    useState("");
 
   const { topic, category, difficulty, keyword } = filters;
 
@@ -58,12 +63,16 @@ function ViewQuestionBank() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:2000/api/deleteQuestion/${id}`);
-      console.log(`Question with id ${id} has been deleted successfully.`);
-      setQuestions((prevQuestions) =>
-        prevQuestions.filter((q) => q._id !== id)
+      console.log("hi");
+      const response = await axios.delete(
+        `http://localhost:2000/api/deleteQuestion/${id}`
       );
+      console.log({ response });
+      const newQuestions = questions.filter((q) => q.id !== id);
+      console.log({ newQuestions });
+      setQuestions(newQuestions);
     } catch (error) {
+      console.log("err");
       console.log(error);
     }
   };
@@ -74,7 +83,6 @@ function ViewQuestionBank() {
       [event.target.name]: event.target.value,
     }));
   };
-
   const filteredQuestions = questions.filter((q) => {
     if (topic && q.topic !== topic) return false;
     if (category && q.category !== category) return false;
@@ -86,6 +94,38 @@ function ViewQuestionBank() {
       return false;
     return true;
   });
+
+  const handleSave = async (id) => {
+    console.log("Editing question ID:", id);
+    try {
+      await axios.put(`http://localhost:2000/api/editQuestion/${id}`, {
+        questionContent: editingQuestionContent,
+        topic: editingQuestionTopic,
+        category: editingQuestionCategory,
+        difficulty: editingQuestionDifficulty,
+      });
+      setQuestions((prevQuestionList) =>
+        prevQuestionList.map((question) =>
+          question._id === id
+            ? {
+                ...question,
+                questionContent: editingQuestionContent,
+                topic: editingQuestionTopic,
+                category: editingQuestionCategory,
+                difficulty: editingQuestionDifficulty,
+              }
+            : question
+        )
+      );
+      setEditingQuestionId(null);
+      setEditingQuestionContent("");
+      setEditingQuestionTopic("");
+      setEditingQuestionCategory("");
+      setEditingQuestionDifficulty("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="wrapper">
@@ -176,27 +216,145 @@ function ViewQuestionBank() {
                         <tbody>
                           {filteredQuestions.map((q) => (
                             <tr key={q._id}>
-                              {/* <td>{q._id}</td> */}
-                              <td>{q.questionContent}</td>
-                              <td>{topics.get(q.topic)}</td>
-                              <td>{categories.get(q.category)}</td>
-                              <td>{difficulties.get(q.difficulty)}</td>
-                              <td>
-                                <button
-                                  className="btn btn-danger"
-                                  onClick={() => handleDelete(q._id)}
-                                >
-                                  Delete
-                                </button>
-                               
-                                <button
-                                  className="btn btn-primary"
-                                  style={{ marginLeft: "10px" }}
-                                >
-                                  Edit
-                                </button>
-                               
-                              </td>
+                              {editingQuestionId === q._id ? (
+                                <>
+                                  <td>
+                                    <textarea
+                                      rows="5"
+                                      cols="23"
+                                      value={editingQuestionContent}
+                                      onChange={(e) =>
+                                        setEditingQuestionContent(
+                                          e.target.value
+                                        )
+                                      }
+                                    />
+                                  </td>
+                                  <td>
+                                    <select
+                                      className="form-select"
+                                      value={editingQuestionTopic}
+                                      onChange={(e) =>
+                                        setEditingQuestionTopic(e.target.value)
+                                      }
+                                    >
+                                      <option value="">
+                                        -- Select a topic --
+                                      </option>
+                                      {Array.from(topics).map(([id, name]) => (
+                                        <option key={id} value={id}>
+                                          {name}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </td>
+                                  <td>
+                                    <select
+                                      className="form-select"
+                                      value={editingQuestionCategory}
+                                      onChange={(e) =>
+                                        setEditingQuestionCategory(
+                                          e.target.value
+                                        )
+                                      }
+                                    >
+                                      <option value="" >
+                                        -- Select a category --
+                                      </option>
+                                      {Array.from(categories).map(
+                                        ([id, name]) => (
+                                          <option key={id} value={id}>
+                                            {name}
+                                          </option>
+                                        )
+                                      )}
+                                    </select>
+                                  </td>
+                                  <td>
+                                    <select
+                                      className="form-select"
+                                      value={editingQuestionDifficulty}
+                                      onChange={(e) =>
+                                        setEditingQuestionDifficulty(
+                                          e.target.value
+                                        )
+                                      }
+                                    >
+                                      <option value="">
+                                        -- Select a difficulty --
+                                      </option>
+                                      {Array.from(difficulties).map(
+                                        ([id, name]) => (
+                                          <option key={id} value={id}>
+                                            {name}
+                                          </option>
+                                        )
+                                      )}
+                                    </select>
+                                  </td>
+                                  <td>
+                                    <button
+                                      className="btn btn-success"
+                                      onClick={() => handleSave(q._id)}
+                                      disabled={
+                                        !editingQuestionContent ||
+                                        !editingQuestionTopic ||
+                                        !editingQuestionCategory
+                                      }
+                                    >
+                                      Save
+                                    </button>
+                                    <button
+                                      className="btn btn-secondary"
+                                      style={{ marginLeft: "10px" }}
+                                      onClick={() => {
+                                        setEditingQuestionId(null);
+                                        setEditingQuestionContent("");
+                                        setEditingQuestionTopic("");
+                                        setEditingQuestionCategory("");
+                                      }}
+                                    >
+                                      Cancel
+                                    </button>
+                                  </td>
+                                </>
+                              ) : (
+                                <>
+                                  <td>
+                                    <textarea rows="5" cols="23" readOnly>
+                                      {q.questionContent}
+                                    </textarea>
+                                  </td>
+                                  <td>{topics.get(q.topic)}</td>
+                                  <td>{categories.get(q.category)}</td>
+                                  <td>{difficulties.get(q.difficulty)}</td>
+                                  <td>
+                                    <button
+                                      className="btn btn-danger"
+                                      onClick={() => handleDelete(q._id)}
+                                    >
+                                      Delete
+                                    </button>
+                                    <button
+                                      className="btn btn-primary"
+                                      style={{ marginLeft: "10px" }}
+                                      onClick={() => {
+                                        setEditingQuestionId(q._id);
+                                        setEditingQuestionContent(
+                                          q.questionContent
+                                        );
+                                        setEditingQuestionTopic(q.topic);
+                                        setEditingQuestionCategory(q.category);
+                                        setEditingQuestionDifficulty(
+                                          q.difficulty
+                                        );
+                                      }}
+                                    >
+                                      Edit
+                                    </button>
+                                  </td>
+                                </>
+                              )}
                             </tr>
                           ))}
                         </tbody>

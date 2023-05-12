@@ -9,7 +9,8 @@ import { CiViewTable} from "react-icons/ci";
 
 function Sidebar() {
   return (
-    <nav id="sidebar" className="sidebar js-sidebar">
+    
+    <nav id="sidebar" className="sidebar js-sidebar" >
       <div className="sidebar-content js-simplebar">
         <a className="sidebar-brand" href="index.html">
           <span className="align-middle">Programmers' Battle</span>
@@ -98,15 +99,24 @@ function Sidebar() {
           </Link>
           </li>
 
+
+
           <li className="sidebar-item">
+          <Link to="/analytics" className='sidebar-link'>
+              <i className="align-middle" data-feather="book"></i>{" "}
+              <CiViewTable/>
+              <span className="align-middle">Analytics</span>
+          </Link>
+          </li>
+
+        {/*   <li className="sidebar-item">
           <Link to="/edit" className='sidebar-link'>
               <i className="align-middle" data-feather="book"></i>{" "}
               <CiViewTable/>
               <span className="align-middle">Edit Questions</span>
           </Link>
           </li>
-
-
+ */}
 
 
 

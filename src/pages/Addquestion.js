@@ -37,6 +37,14 @@ function Addquestion() {
       setIsLoading(false);
     } catch (error) {
       console.log(error);
+      if (error.response && error.response.data && error.response.data.message) {
+        // extract the error message from the error object
+        const errorMessage = error.response.data.message;
+        // display the error message in an alert
+        alert(errorMessage);
+      } else {
+        alert("Login Failed");
+      }
       setIsLoading(false);
     }
   };

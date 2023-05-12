@@ -1,189 +1,146 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import axios from "axios";
-import { Modal, Button, Form } from "react-bootstrap";
 import moment from "moment";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 function Managetopic() {
-  const [Topic, setTopic] = useState("");
-  const [option, setOption] = useState([]);
-
+  const [TopicList, setTopicList] = useState([]);
+  const [newTopic, setNewTopic] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [editingTopicId, setEditingTopicId] = useState(null);
+  const [editingTopicName, setEditingTopicName] = useState("");
   const [questions, setQuestions] = useState([]);
-  let options = [];
-  const [myid, setIdd] = useState([]);
-  const [names, setName] = useState([]);
-  const [createdAt, setcreatedAt] = useState([]);
-  const [newtopic, setnewtopic] = useState([]);
-  const [keyword, setKeyword] = useState("");
-  const [topicName, settopicName] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  // const [topic, setopic] = useState({ _id: "", tName: "" });
-  const [sortBy, setSortBy] = useState("name");
-  //const [prevTopics, setPrevTopics] = useState([]);
-  const [questionCount, setQuestionCount] = useState(0);
-  // setPrevTopics([...prevTopics, data.topic]);
-  const [data, setData] = useState([]);
-  //Add new state to hold the topic to be edited
-
-  let x = [];
-  let y = [];
-  const [sortOrder, setSortOrder] = useState("desc");
-
-  const handledelete = async (id) => {
-    console.log("hello there");
   
-    axios
-      .delete(`http://localhost:2000/api/deleteTopic/${id}`)
-      .then((response) => console.log(response))
-      .catch((error) => console.log(error));
-  };
 
-  const handleSubmit = async (e) => {
-    axios
-      .post("http://localhost:2000/api/addTopic", {
-        tName: newtopic,
-      })
-      .then((response) => console.log(response))
-      .catch((error) => console.log(error));
-    //setDates([...dates, new Date().toLocaleDateString()]);
-  };
-
-  /*  const gettopics = async (sortOrder) => {
-    axios
-      .get("http://localhost:2000/api/viewTopic")
-      .then((response) => {
-        const sortedData = response.data.topic.sort((a, b) => {
-          const nameA = a.tName.toLowerCase();
-          const nameB = b.tName.toLowerCase();
-
-          if (nameA < nameB) {
-            return sortOrder === "asc" ? -1 : 1;
-          } else if (nameA > nameB) {
-            return sortOrder === "asc" ? 1 : -1;
-          } else {
-            return 0;
-          }
-        });
-
-        const options = [];
-        const x = [];
-        const y = [];
-        const z = [];
-
-        sortedData.forEach((topic) => {
-          let dte = moment(topic.createdAt).format("MM/DD/YYYY hh:mm:ss A");
-          options.push(topic.id, topic.tName);
-          x.push(topic.id);
-          y.push(topic.tName);
-          z.push(dte);
-        });
-        setOption(options);
-        setIdd(x);
-        setName(y);
-        setcreatedAt(z);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }; */
-  /*   const handleSortChange = (e) => {
-    const selectedSortOrder = e.target.value;
-  gettopics(selectedSortOrder);
-  setSortOrder(selectedSortOrder);
-  }; */
-  const handleSortChange = (event) => {
-    const sortValue = event.target.value;
-    const sortedOptions = [...options];
-
-    if (sortValue === "asc") {
-      sortedOptions.sort((a, b) => a[1].localeCompare(b[1]));
-      // y.sort();
-      // console.log(y)
-    } else if (sortValue === "desc") {
-      sortedOptions.sort((a, b) => b[1].localeCompare(a[1]));
-    /*   console.log(sortedOptions); */
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:2000/api/deleteTopic/${id}`);
+      setTopicList((prevtopicList) =>
+        prevtopicList.filter((topic) => topic.id !== id)
+      );
+    } catch (error) {
+      console.log(error);
     }
-
-    setOption(sortedOptions);
   };
-
-  const gettopics = async () => {
-    axios
-      .get("http://localhost:2000/api/viewTopic")
-      .then((response) => {
-        const z = [];
-        for (let i = 0; i < Object.keys(response.data.topic).length; i++) {
-          let dte = moment(response.data.topic[i].createdAt).format(
-            "MM/DD/YYYY hh:mm:ss A"
-          );
-          options.push(response.data.topic[i].id, response.data.topic[i].tName);
-          x.push(response.data.topic[i].id);
-          y.push(response.data.topic[i].tName);
-          z.push(dte);
-        }
-        setOption(options);
-        setIdd(x);
-        setName(y);
-        setcreatedAt(z);
-      })
-      .catch((e) => {
-        /* console.log(e); */
-      });
-  };
-
-  /* useEffect(() => { */
   const getQuestions = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:2000/api/viewquestion"
-      );
-      /*   console.log(response.data) */
+      const response = await axios.get("http://localhost:2000/api/viewquestion");
       setQuestions(response.data.question);
     } catch (error) {
-     /*  console.log(error); */
+      // handle error
     }
   };
-  /* getQuestions(); */
-  /*  }, []); */
-
-  const getQuestionsCount = (topicId) => {
+  
+  useEffect(() => {
     getQuestions();
-/* 
-    console.log("t : ", topicId); */
-
-    questions.filter((question) => question.topic);
-
+  }, []);
+  
+  const getQuestionsCount = (topicId) => {
     const filteredQuestions = questions.filter(
       (question) => question.topic === topicId
     );
     return filteredQuestions.length;
   };
 
-  const handleSearch = async () => {
+
+  const handleSearch = useCallback(async () => {
     try {
       const response = await axios.get(
-        `http://localhost:2000/api/searchTopic?q=${keyword}`
+        `http://localhost:2000/api/searchTopic?q=${searchKeyword}`
       );
       const searchResults = response.data.topics;
-      setSearchResults(searchResults); // Update the search results state
+      setTopicList(searchResults);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [searchKeyword]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:2000/api/addTopic",
+        {
+          tName: newTopic,
+        }
+      );
+      const {id, tName, createdAt} = response.data.topic;
+      setTopicList((prevTopicList) => [
+        ...prevTopicList,
+        {
+        id:id,
+        name:tName,
+        createdAt:moment(createdAt).format("MM/DD/YYYY hh:mm:ss A")}    
+      ]);
+      setNewTopic("");
+     
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  };
+
+  const handleSave = async (id) => {
+    try {
+      await axios.put(`http://localhost:2000/api/editTopic/${id}`, {
+        tName: editingTopicName,
+      });
+      setTopicList((prevTopicList) =>
+        prevTopicList.map((topic) =>
+          topic.id === id
+            ? { ...topic, name: editingTopicName }
+            : topic
+        )
+      );
+      setEditingTopicId(null);
+      setEditingTopicName("");
+     
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleNameChange = (event) => {
-    setName(event.target.value);
-    console.log(names);
-  };
+  const handleSort = useCallback(() => {
+    setTopicList((prevTopicList) =>
+      sortOrder === "asc"
+        ? [...prevTopicList].sort((a, b) => a.name.localeCompare(b.name))
+        : [...prevTopicList].sort((a, b) => b.name.localeCompare(a.name))
+    );
+    setSortOrder((prevSortOrder) => (prevSortOrder === "asc" ? "desc" : "asc"));
+  }, [sortOrder]);
 
-  // useEffect(() => {
+  const getTopics = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:2000/api/viewTopic"
+      );
+      const topics = response.data.topic.map((topic) => ({
+        id: topic.id,
+        name: topic.tName,
+        createdAt: moment(topic.createdAt).format("MM/DD/YYYY hh:mm:ss A"),
+      }));
+      setTopicList(topics);
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+  useEffect(() => {
+    getTopics();
+  }, [getTopics]);
 
-  gettopics();
-
-// }, []);
+  const filteredTopics = useMemo(() => {
+    return TopicList.filter(
+      (topic) =>
+        topic.name &&
+        topic.name.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+  }, [TopicList, searchKeyword]);
 
   return (
     <div className="wrapper">
@@ -192,211 +149,149 @@ function Managetopic() {
         <Navbar />
         <main className="content">
           <div className="container-fluid p-0">
-            <div class="row">
-              {/*   <div class="col-12 col-lg-8 col-xxl-9 d-flex"> */}
+            <div className="row">
               <div
-                class="col-12 col-lg-8 col-xxl-9 d-flex"
+                className="col-12 col-lg-8 col-xxl-9 d-flex"
                 style={{ width: "100%" }}
               >
-                <div class="card flex-fill">
-                  <div
-                    class="card-header"
-                    style={{ backgroundColor: "rgb(46, 64, 83)" }}
-                  >
-                    <h5 class="card-title mb-0" style={{ color: "white" }}>
-                      Manage Topics
-                    </h5>
-                    <hr style={{ width: "100%", margin: "10px 0" }} />
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      <input
-                        type="text"
-                        onChange={(e) => {
-                          setnewtopic(e.target.value);
-                        }}
-                        className="form-control"
-                        style={{
-                          width: "300px",
-                          marginRight: "10px",
-                          border: "2px solid #ccc",
-                          borderRadius: "4px",
-                          padding: "10px",
-                          fontSize: "16px",
-                          fontWeight: "400",
-                        }}
-                        placeholder="Enter Topic"
-                      />
-                      <button
-                        type="submit"
-                        className="btn btn-primary"
-                        onClick={handleSubmit}
-                        style={{
-                          padding: "10px 20px",
-                          borderRadius: "4px",
-                          background: "#007bff",
-                          color: "#fff",
-                          fontSize: "16px",
-                          fontWeight: "400",
-                          border: "none",
-                          cursor: "pointer",
-                          marginRight: "10px", // added margin to the right
-                        }}
-                      >
-                        Add
-                      </button>
-                      <input
-                        type="text"
-                        onChange={(e) => {
-                          setKeyword(e.target.value);
-                        }}
-                        className="form-control"
-                        style={{
-                          width: "300px",
-                          marginRight: "10px",
-                          border: "2px solid #ccc",
-                          borderRadius: "4px",
-                          padding: "10px",
-                          fontSize: "16px",
-                          fontWeight: "400",
-                        }}
-                        placeholder="Search"
-                      />
-                      <button
-                        type="submit"
-                        className="btn btn-primary"
-                        onClick={handleSearch}
-                        style={{
-                          padding: "10px 20px",
-                          borderRadius: "4px",
-                          background: "#007bff",
-                          color: "#fff",
-                          fontSize: "16px",
-                          fontWeight: "400",
-                          border: "none",
-                          cursor: "pointer",
-                          marginRight: "10px", // added margin to the right
-                        }}
-                      >
-                        Search
-                      </button>
-                      <select
-                        onChange={handleSortChange}
-                        style={{
-                          width: "200px",
-                          height: "40px",
-                          borderRadius: "4px",
-                          border: "2px solid #ccc",
-                          padding: "10px",
-                          fontSize: "16px",
-                          fontWeight: "400",
-                          marginLeft: "10px",
-                          verticalAlign: "middle",
-                          zIndex: "9999",
-                          color: "#333",
-                        }}
-                      >
-                        <option
-                          value=""
-                          style={{ padding: "5px 0", fontSize: "14px" }}
+                <div className="card flex-fill">
+                  <div className="card-header">
+                    <h5 className="card-title mb-0">Manage Topics</h5>
+                  </div>
+                  <div className="card-body">
+                    <form onSubmit={handleSubmit}>
+                      <div className="input-group mb-3"
+                        style={{ width: "45%" }}
                         >
-                          Sort
-                        </option>
-                        <option
-                          value="asc"
-                          style={{ padding: "5px 0", fontSize: "14px" }}
+                    
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="New Topic"
+                          value={newTopic}
+                          onChange={(e) => setNewTopic(e.target.value)}
+                        
+                        />
+                        <button className="btn btn-primary" type="submit"
+                          >
+                          Add
+                        </button>
+                      </div>
+                    </form>
+                    <div className="d-flex justify-content-between">
+                      <div
+                        className="input-group mb-3"
+                        style={{ width: "45%" }}
+                      >
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Search Topics"
+                          value={searchKeyword}
+                          onChange={(e) => setSearchKeyword(e.target.value)}
+                        />
+                        <button
+                          className="btn btn-outline-secondary"
+                          type="button"
+                          onClick={handleSearch}
                         >
-                          Sort A-Z
-                        </option>
-                        <option
-                          value="desc"
-                          style={{ padding: "5px 0", fontSize: "14px" }}
+                          Search
+                        </button>
+                      </div>
+                      <div>
+                        <button
+                          className="btn btn-outline-secondary"
+                          type="button"
+                          onClick={handleSort}
                         >
-                          Sort Z-A
-                        </option>
-                      </select>
+                          Sort by Name {sortOrder === "asc" ? "▲" : "▼"}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="table-responsive">
+                      <table className="table table-hover">
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Created At</th>
+                            <th>Count</th>
+                            <th>Actions</th>
+                           
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredTopics.map((topic) => (
+                            <tr key={topic.id}>
+                              {editingTopicId === topic.id ? (
+                                <>
+                                  <td>
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                      placeholder="Type name"
+                                      value={editingTopicName}
+                                      onChange={(e) =>
+                                        setEditingTopicName(e.target.value)
+                                      }
+                                    />
+                                  </td>
+                                  <td></td>
+                                  <td>
+                                    <button
+                                      className="btn btn-success"
+                                      onClick={() =>
+                                        handleSave(editingTopicId)
+                                      }
+                                      disabled={!editingTopicName}
+                                    >
+                                      Save
+                                    </button>
+                                    <button
+                                      className="btn btn-secondary"
+                                      style={{ marginLeft: "10px" }}
+                                      onClick={() => {
+                                        setEditingTopicId(null);
+                                        setEditingTopicName("");
+                                      }}
+                                    >
+                                      Cancel
+                                    </button>
+                                  </td>
+                                  <td></td>
+                                </>
+                              ) : (
+                                <>
+                                  <td>{topic.name}</td>
+                                  <td>{topic.createdAt}</td>
+                                  <td>{getQuestionsCount(topic.id)}</td>
+                    
+                                  <td>
+                                    <button
+                                      className="btn btn-danger"
+                                      onClick={() => handleDelete(topic.id)}
+                                    >
+                                      Delete
+                                    </button>
+                                    <button
+                                      className="btn btn-primary"
+                                      style={{ marginLeft: "10px" }}
+                                      onClick={() => {
+                                        setEditingTopicId(topic.id);
+                                        setEditingTopicName(topic.name);
+                                      }}
+                                    >
+                                      Edit
+                                    </button>
+                                  </td>
+                                 
+                                </>
+                              )}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
-                  <table class="table table-hover my-0">
-                    <thead>
-                      <tr>
-                        <th style={{ fontWeight: "bold" }}>Topic</th>
-                        <th style={{ fontWeight: "bold" }}>Delete</th>
-                        <th style={{ fontWeight: "bold" }}>Edit</th>
-                        <th style={{ fontWeight: "bold" }}>Count</th>
-                        <th style={{ fontWeight: "bold" }}>CreatedAt</th>
-                       
-
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {searchResults.length > 0
-                        ? searchResults.map((result) => (
-                            <tr key={result.id}>
-                              {/* <td>{result.id}</td> */}
-                              <td>{result.tName}</td>
-                              <td>
-                                <button
-                                  style={{ marginBottom: 10, marginTop: 10 }}
-                                  className="btn btn-primary"
-                                  id={result.id}
-                                  onClick={() => handledelete(result.id)}
-                                >
-                                  Delete
-                                </button>
-                              </td>
-                              <td>
-                                <button
-                                  style={{ marginBottom: 10, marginTop: 10 }}
-                                  className="btn btn-primary"
-                                >
-                                  Edit
-                                </button>
-                              </td>
-                              <td></td>
-                              <td>
-                                {moment(result.createdAt).format(
-                                  "MM/DD/YYYY hh:mm:ss A"
-                                )}
-                              </td>
-                            </tr>
-                          ))
-                        :  myid.map((item, k) => (
-                            <tr key={item}>
-                              <td>{names[k]}</td>
-                              <td>
-                                <button
-                                  style={{ marginBottom: 10, marginTop: 10 }}
-                                  type="submit"
-                                  className="btn btn-primary"
-                                  id={item}
-                                  onClick={() => handledelete(item)}
-                                >
-                                  Delete{" "}
-                                </button>
-                              </td>
-
-                              <td>
-                                <button
-                                  style={{ marginBottom: 10, marginTop: 10 }}
-                                  className="btn btn-primary"
-                                >
-                                  Edit
-                                </button>
-                              </td>
-                              <td>{getQuestionsCount(item)}</td>
-                              <td>{createdAt[k]}</td>
-                            </tr>
-                            
-                          ))}
-                          
-                    </tbody>
-                  </table>
                 </div>
               </div>
             </div>
@@ -407,5 +302,3 @@ function Managetopic() {
   );
 }
 export default Managetopic;
-
-
