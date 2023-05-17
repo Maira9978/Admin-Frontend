@@ -1,11 +1,11 @@
-import React,{useState,useEffect} from "react";
-import { BrowserRouter as Router, Route ,Link} from 'react-router-dom';
-import  { Component, Suspense } from 'react';
-import { HashRouter, Routes } from 'react-router-dom';
-import Sidebar from "./components/Sidebar";
-import Navbar from "./components/Navbar";
+import React from "react";
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+// import  { Component, Suspense } from 'react';
+import {  Routes } from 'react-router-dom';
+// import Sidebar from "./components/Sidebar";
+// import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Dashboard from "./pages/Dashboard";
+// import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Main from "./pages/Main";
 import Profile from "./pages/Profile";
@@ -15,6 +15,9 @@ import ViewQuestionBank from "./pages/ViewQuestionBank";
 import Managetopic from "./pages/Managetopic";
 import Managetype from "./pages/Managetype";
 import Edit from "./pages/Edit";
+import Analytics from "./pages/analytics";
+import Landing from "./components/Landing";
+
 function App() {
   const items = JSON.parse(localStorage.getItem('dataKey'));
   // const tk=items.token
@@ -45,8 +48,9 @@ function App() {
             <Route path="/managetopic" element={tk?<Managetopic/>:<Login/>} /> 
             <Route path="/managetype" element={tk?<Managetype/>:<Login/>} /> 
             <Route path="/edit" element={tk?<Edit/>:<Login/>} /> 
+            <Route path="/analytics" element={tk?<Analytics/>:<Login/>} /> 
 
-          
+            <Route path="/landing" element={tk?<Landing/>:<Login/>} /> 
           
         </Routes>
         

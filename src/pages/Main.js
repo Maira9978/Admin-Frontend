@@ -15,7 +15,7 @@ function Main() {
   const [categories, setCategories] = useState([]);
   const [topics, setTopics] = useState([]);
   const [difficulty, setdifficulty] = useState([]);
-  const [users, setusers] = useState([]);
+  // const [users, setusers] = useState([]);
   
   const getQuestions = async () => {
     try {

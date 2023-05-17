@@ -102,10 +102,10 @@ function Sidebar() {
 
 
           <li className="sidebar-item">
-          <Link to="/analytics" className='sidebar-link'>
+          <Link to="/landing" className='sidebar-link'>
               <i className="align-middle" data-feather="book"></i>{" "}
               <CiViewTable/>
-              <span className="align-middle">Analytics</span>
+              <span className="align-middle">Upload Dry Run</span>
           </Link>
           </li>
 

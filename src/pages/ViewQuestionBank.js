@@ -8,7 +8,7 @@ function ViewQuestionBank() {
   const [difficulties, setDifficulties] = useState([]);
   const [categories, setCategories] = useState([]);
   const [topics, setTopics] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
+  // const [searchResults, setSearchResults] = useState([]);
   const [filters, setFilters] = useState({
     topic: "",
     category: "",

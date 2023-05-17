@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import Dashboard from "./Dashboard";
+// import Dashboard from "./Dashboard";
 import { useEffect, useState } from "react";
 function Profile() {
   const [items, setItems] = useState(null);
