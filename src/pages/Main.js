@@ -6,6 +6,9 @@ import { FcQuestions } from "react-icons/fc";
 import { MdTopic } from "react-icons/md";
 import { BiCategory } from "react-icons/bi";
 import { GiLevelEndFlag } from "react-icons/gi";
+
+import {CiAlignBottom} from "react-icons/ci";
+import{AiOutlineUserSwitch} from "react-icons/ai";
 import "react-datetime/css/react-datetime.css";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -15,7 +18,7 @@ function Main() {
   const [categories, setCategories] = useState([]);
   const [topics, setTopics] = useState([]);
   const [difficulty, setdifficulty] = useState([]);
-  // const [users, setusers] = useState([]);
+  const [users, setusers] = useState([]);
   
   const getQuestions = async () => {
     try {
@@ -54,21 +57,22 @@ function Main() {
     }
   };
 
- /*  const getusers = async () => {
+   const getusers = async () => {
     try {
       const response = await axios.get("http://localhost:2000/api/users");
-      console.log(response.data.user)
-      setusers(response.data.user);
+      
+      
+      setusers(response);
     } catch (error) {
       console.log("Error:", error);
     }
-  }; */
+  }; 
   useEffect(() => {
     getQuestions();
     getCategories();
     getTopics ();
     getdifficulty();
-   /*  getusers(); */
+     getusers(); 
   }, []);
   const getTotalQuestionsCount = () => {
     return questions.length;
@@ -83,9 +87,9 @@ function Main() {
   const getTotaldifficultyCount = () => {
     return difficulty.length;
   };
- /*  const getusersCount = () => {
-    return users.length;
-  }; */
+  const getusersCount = () => {
+    return Object.keys(users).length;
+  };
   return (
     <div className="wrapper">
       <Sidebar />
@@ -138,7 +142,7 @@ function Main() {
                                 className="align-middle"
                                 data-feather="users"
                               ></i>
-                              <MdTopic />
+                              <CiAlignBottom />
                             </div>
                           </div>
                         </div>
@@ -153,7 +157,7 @@ function Main() {
                       
                     </div>
                     
-                    {/* <div className="card">
+                 <div className="card">
                       <div className="card-body">
                         <div className="row">
                           <div className="col mt-0">
@@ -166,11 +170,11 @@ function Main() {
                                 className="align-middle"
                                 data-feather="users"
                               ></i>
-                              <MdTopic />
+                              <AiOutlineUserSwitch />
                             </div>
                           </div>
                         </div>
-                        <h1 className="mt-1 mb-3">{}</h1>
+                        <h1 className="mt-1 mb-3">{getusersCount()}</h1>
                         <div className="mb-0">
                           
                           <span className="text-muted"></span>
@@ -179,8 +183,7 @@ function Main() {
 
 
                       
-                    </div> */}
-
+                    </div> 
                   </div>
                   
                   <div className="col-sm-6">

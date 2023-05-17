@@ -3,12 +3,11 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 
-
 const Blank = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [numQuestions, setNumQuestions] = useState(0);
-
+  const [errorMessage, setErrorMessage] = useState("");
 
   const fileData = () => {
     if (selectedFile) {
@@ -33,6 +32,10 @@ const Blank = () => {
 
   const onFileUpload = async () => {
     if (selectedFile) {
+      if (!selectedFile.name.endsWith(".txt")) {
+        setErrorMessage("Only TXT files are allowed");
+        return;
+      }
       setIsLoading(true);
       const formData = new FormData();
       formData.append("myFile", selectedFile, selectedFile.name);
@@ -43,17 +46,28 @@ const Blank = () => {
         );
         console.log(response.data);
         setNumQuestions(response.data.length); // update numQuestions with the number of questions uploaded
-        console.log(numQuestions)
+        setErrorMessage(""); // Clear any previous error messages
       } catch (error) {
         console.log(error);
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          setErrorMessage(error.response.data.message);
+        } else {
+          setErrorMessage("Error uploading file");
+        }
       }
       setIsLoading(false);
+    } else {
+      setErrorMessage("No file selected");
     }
   };
-  
 
   const onFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
+    setErrorMessage("");
   };
 
   return (
@@ -70,7 +84,7 @@ const Blank = () => {
                     className="card-header"
                     style={{ backgroundColor: "rgb(46, 64, 83)" }}
                   >
-                    <h5 class="card-title mb-0" style={{ color: "white" }}>
+                    <h5 className="card-title mb-0" style={{ color: "white" }}>
                       Upload Questions
                     </h5>
                   </div>
@@ -82,7 +96,7 @@ const Blank = () => {
                         onChange={onFileChange}
                       />
                     </div>
-                    <br></br>
+                    <br />
                     <div className="form-group">
                       <button
                         className="btn btn-primary btn-block"
@@ -92,16 +106,21 @@ const Blank = () => {
                         {isLoading ? "Uploading..." : "Upload"}
                       </button>
                     </div>
+                    {errorMessage && (
+                      <div className="alert alert-danger" role="alert">
+                        {errorMessage}
+                      </div>
+                    )}
                   </div>
                 </div>
                 {fileData()}
-                
+
                 {numQuestions > 0 && (
-                  
                   <div className="card mt-3">
                     <div className="card-body">
-                      
-                      <h5 className="card-title">Number of questions uploaded: {numQuestions}</h5>
+                      <h5 className="card-title">
+                        Number of questions uploaded: {numQuestions}
+                      </h5>
                     </div>
                   </div>
                 )}
@@ -112,7 +131,6 @@ const Blank = () => {
       </div>
     </div>
   );
-  
 };
 
 export default Blank;

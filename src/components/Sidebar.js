@@ -6,7 +6,9 @@ import { MdOutlineManageAccounts} from "react-icons/md";
 import { BsFillCloudUploadFill} from "react-icons/bs";
 import { BiAddToQueue} from "react-icons/bi";
 import { CiViewTable} from "react-icons/ci";
+import{DiGoogleAnalytics} from "react-icons/di";
 
+import{BiUpload} from "react-icons/bi";
 function Sidebar() {
   return (
     
@@ -104,8 +106,15 @@ function Sidebar() {
           <li className="sidebar-item">
           <Link to="/landing" className='sidebar-link'>
               <i className="align-middle" data-feather="book"></i>{" "}
-              <CiViewTable/>
+              <BiUpload/>
               <span className="align-middle">Upload Dry Run</span>
+          </Link>
+          </li>
+          <li className="sidebar-item">
+          <Link to="/analytics" className='sidebar-link'>
+              <i className="align-middle" data-feather="book"></i>{" "}
+              <DiGoogleAnalytics/>
+              <span className="align-middle">Analytics</span>
           </Link>
           </li>
 

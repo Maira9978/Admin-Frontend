@@ -17,7 +17,7 @@ import Managetype from "./pages/Managetype";
 import Edit from "./pages/Edit";
 import Analytics from "./pages/analytics";
 import Landing from "./components/Landing";
-
+//import Analytics from "./pages/analytics";
 function App() {
   const items = JSON.parse(localStorage.getItem('dataKey'));
   // const tk=items.token
